@@ -6,7 +6,7 @@
 
 var Angular2App = require('angular-cli/lib/broccoli/angular2-app');
 
-module.exports = function(defaults) {
+module.exports = function (defaults) {
   return new Angular2App(defaults, {
     vendorNpmFiles: [
       'systemjs/dist/system-polyfills.js',
@@ -16,6 +16,13 @@ module.exports = function(defaults) {
       'reflect-metadata/**/*.+(ts|js|js.map)',
       'rxjs/**/*.+(js|js.map)',
       '@angular/**/*.+(js|js.map)'
-    ]
+    ],
+    sassCompiler: {
+      "cacheExclude": [/\/_[^\/]+$/],
+      "includePaths": [
+        'node_modules/todomvc-common/base.css',
+        'node_modules/todomvc-app-css/index.css'
+      ]
+    }
   });
 };
