@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TodoMvcDotnet.Service.Models;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,36 +11,76 @@ namespace TodoMvcDotnet.Service.Controllers
     [Route("api/[controller]")]
     public class TodosController : Controller
     {
-        // GET api/values
+
+        public TodosContext DbContext { get; set; } = new TodosContext();
+
+        // GET api/todos
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(DbContext.Todos);
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/todos/5
+        [HttpGet("{id:int}", Name = "GetTodo")]
+        public IActionResult Get(int id)
         {
-            return "value";
+            var query = from t in DbContext.Todos
+                        where t.Id == id
+                        select t;
+            Todo todo = query.FirstOrDefault<Todo>();
+            if (todo != null)
+            {
+                return Ok(todo);
+            }
+            return NotFound();
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
+        // POST api/todos
+        [HttpPost(Name = "CreateTodo")]
+        public IActionResult Post([FromBody] Todo todo)
         {
+            if (ModelState.IsValid == false)
+            {
+                return BadRequest(ModelState);
+            }
+            DbContext.Add(todo);
+            var added = DbContext.SaveChanges();
+            return Created($"api/todos/{todo.Id}", todo);
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        // PUT api/todos/5
+        [HttpPut("{id:int}", Name = "UpdateTodo")]
+        public IActionResult Put(int id, [FromBody] Todo todo)
         {
+            if (ModelState.IsValid == false)
+            {
+                return BadRequest(ModelState);
+            }
+            if (todo.Id == 0)
+            {
+                return BadRequest();
+            }
+            DbContext.Update(todo);
+            DbContext.SaveChanges();
+            return NoContent();
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // DELETE api/todos/5
+        [HttpDelete("{id:int}", Name = "DeleteTodo")]
+        public IActionResult Delete(int id)
         {
+            var query = from t in DbContext.Todos
+                        where t.Id == id
+                        select t;
+            Todo todo = query.FirstOrDefault<Todo>();
+            if (todo == null)
+            {
+                return NotFound();
+            }
+            DbContext.Remove(todo);
+            DbContext.SaveChanges();
+            return NoContent();
         }
     }
 }
