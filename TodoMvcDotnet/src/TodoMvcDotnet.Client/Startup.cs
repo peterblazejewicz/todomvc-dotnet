@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using TodoMvcDotnet.Service.Models;
 
 namespace TodoMvcDotnet.Client
 {
@@ -30,6 +32,10 @@ namespace TodoMvcDotnet.Client
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // in-memory database
+            services.AddDbContext<TodosContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
             // add CORS support (used during development)
             services.AddCors();
             // Add framework services.
@@ -71,6 +77,7 @@ namespace TodoMvcDotnet.Client
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
+                app.UseDatabaseErrorPage();
             }
             app.UseMvc();
         }
