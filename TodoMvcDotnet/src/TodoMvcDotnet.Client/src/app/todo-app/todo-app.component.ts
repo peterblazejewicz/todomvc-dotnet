@@ -7,15 +7,17 @@ import { Todo } from '../todo';
   selector: 'todo-app',
   templateUrl: 'todo-app.component.html',
   styleUrls: ['todo-app.component.css'],
-  providers: [TodoService]
+  providers: [ TodoService ]
 })
 export class TodoAppComponent implements OnInit {
-
+  errorMessage: string;
   newTodo: Todo = new Todo();
+  todos: Todo[];
 
   constructor(private todoService: TodoService) { }
 
   ngOnInit() {
+    this.getTodos();
   }
 
   addTodo() {
@@ -31,8 +33,13 @@ export class TodoAppComponent implements OnInit {
     this.todoService.deleteTodoById(todo.id);
   }
 
-  get todos() {
-    return this.todoService.getAllTodos();
+  getTodos() {
+    return this.todoService
+      .getAllTodos()
+      .subscribe(
+        todos => this.todos = todos,
+        error =>  this.errorMessage = <any>error
+      );
   }
 
 }

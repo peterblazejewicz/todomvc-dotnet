@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
 import { Todo } from './todo';
 
 @Injectable()
 export class TodoService {
 
+  private ENDPOINT_URL: string = 'http://localhost:5000/api/todos';
   // Placeholder for last id so we can simulate
   // automatic incrementing of id's
   lastId: number = 0;
@@ -11,8 +14,7 @@ export class TodoService {
   // Placeholder for todo's
   todos: Todo[] = [];
 
-  constructor() {
-  }
+  constructor(private http: Http) { }
 
   // Simulate POST /todos
   addTodo(todo: Todo): TodoService {
@@ -40,9 +42,12 @@ export class TodoService {
     return todo;
   }
 
-  // Simulate GET /todos
-  getAllTodos(): Todo[] {
-    return this.todos;
+  // GET api/todos/
+  getAllTodos(): Observable<Todo[]> {
+    return this.http
+      .get(this.ENDPOINT_URL)
+      .map(res => res.json())
+      .catch(this.handleError);
   }
 
   // Simulate GET /todos/:id
@@ -60,5 +65,13 @@ export class TodoService {
     return updatedTodo;
   }
 
+  private handleError(error: any) {
+    // In a real world app, we might use a remote logging infrastructure
+    // We'd also dig deeper into the error to get a better message
+    let errMsg = (error.message) ? error.message :
+      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
+    console.error(errMsg); // log to console instead
+    return Observable.throw(errMsg);
+  }
 
 }
