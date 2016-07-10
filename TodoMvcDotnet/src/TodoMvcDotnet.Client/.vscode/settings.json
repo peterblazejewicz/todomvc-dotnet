@@ -1,5 +1,23 @@
 {
   "eslint.enable": false,
   "jshint.enable": false,
-  "tslint.enable": true
+  "tslint.enable": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.DS_Store": true,
+    "tmp": true,
+    "typings": true,
+    "**/*.js": {
+      "when": "$(basename).ts"
+    }
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/dist": true,
+    "**/*.js": {
+      "when": "$(basename).ts"
+    }
+  }
 }
