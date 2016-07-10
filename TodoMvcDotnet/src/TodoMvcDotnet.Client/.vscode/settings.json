@@ -6,13 +6,15 @@
     "**/.git": true,
     "**/.svn": true,
     "**/.DS_Store": true,
+    "**/project.lock.json": true,
+    "bin": true,
+    "obj": true,
     "tmp": true,
     "typings": true,
     "typings.json": true,
     "**/*.js": {
       "when": "$(basename).ts"
-    },
-    "**/project.lock.json": true
+    }
   },
   "search.exclude": {
     "**/node_modules": true,
