@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Todo } from './todo';
 
@@ -7,6 +7,7 @@ import { Todo } from './todo';
 export class TodoService {
 
   private ENDPOINT_URL: string = 'http://localhost:5000/api/todos';
+  private headers: Headers;
   // Placeholder for last id so we can simulate
   // automatic incrementing of id's
   lastId: number = 0;
@@ -14,15 +15,19 @@ export class TodoService {
   // Placeholder for todo's
   todos: Todo[] = [];
 
-  constructor(private http: Http) { }
+  constructor(private http: Http) {
+    this.headers = new Headers({ 'Content-Type': 'application/json' });
+  }
 
   // Simulate POST /todos
-  addTodo(todo: Todo): TodoService {
-    if (!todo.id) {
-      todo.id = ++this.lastId;
-    }
-    this.todos.push(todo);
-    return this;
+  addTodo(todo: Todo): Observable<Todo> {
+    let body = JSON.stringify(todo);
+    let options = new RequestOptions({ headers: this.headers });
+    return this.http.post(this.ENDPOINT_URL,
+      body,
+      options)
+      .map(res => res.json())
+      .catch(this.handleError);
   }
 
   // Simulate DELETE /todos/:id

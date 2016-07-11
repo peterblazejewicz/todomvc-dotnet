@@ -21,7 +21,12 @@ export class TodoAppComponent implements OnInit {
   }
 
   addTodo() {
-    this.todoService.addTodo(this.newTodo);
+    this.todoService
+      .addTodo(this.newTodo)
+      .subscribe(
+        todo => this.todos.push(todo),
+        error => this.errorMessage = <any>error
+      );
     this.newTodo = new Todo();
   }
 
