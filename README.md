@@ -1,6 +1,8 @@
 # todomvc-dotnet
 Angular 2 TodoMVC backed by Dotnet Kestrel server featureing EF7 and Web API.
 
+![TodoMvc Dotnet](https://cloud.githubusercontent.com/assets/14539/16746839/95b5754e-47bc-11e6-9f97-d91d7c3e52c1.png)
+
 ## Features
 
 - Angular CLI based client project
