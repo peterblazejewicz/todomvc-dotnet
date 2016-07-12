@@ -30,8 +30,11 @@ export class TodoAppComponent implements OnInit {
     this.newTodo = new Todo();
   }
 
-  toggleTodoComplete(todo) {
-    this.todoService.toggleTodoComplete(todo);
+  toggleTodoComplete(todo: Todo) {
+    todo.complete = !todo.complete;
+    this.todoService
+      .updateTodo(todo)
+      .subscribe(() => {}, error => this.errorMessage = <any>error);
   }
 
   removeTodo(todo) {
@@ -41,6 +44,12 @@ export class TodoAppComponent implements OnInit {
         () => this.removeTodoById(todo.id),
         error => this.errorMessage = <any>error
       );
+  }
+
+  getTodoById(id: number): Todo {
+    return this.todos
+      .filter(todo => todo.id === id)
+      .pop();
   }
 
   removeTodoById(id) {

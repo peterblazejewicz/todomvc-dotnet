@@ -41,14 +41,16 @@ export class TodoService {
       .catch(this.handleError);
   }
 
-  // Simulate PUT /todos/:id
-  updateTodoById(id: number, values: Object = {}): Todo {
-    let todo = this.getTodoById(id);
-    if (!todo) {
-      return null;
-    }
-    Object.assign(todo, values);
-    return todo;
+  // PUT /todos/:id
+  updateTodo(todo: Todo): Observable<Todo> {
+    let options = new RequestOptions({
+      headers: this.headers
+    });
+    let url = `${this.ENDPOINT_URL}/${todo.id}/`;
+    let body = JSON.stringify(todo);
+    return this.http
+      .put(url, body, options)
+      .catch(this.handleError);
   }
 
   // GET api/todos/
@@ -64,14 +66,6 @@ export class TodoService {
     return this.todos
       .filter(todo => todo.id === id)
       .pop();
-  }
-
-  // Toggle todo complete
-  toggleTodoComplete(todo: Todo) {
-    let updatedTodo = this.updateTodoById(todo.id, {
-      complete: !todo.complete
-    });
-    return updatedTodo;
   }
 
   private handleError(error: any) {
