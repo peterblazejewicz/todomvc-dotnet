@@ -35,7 +35,17 @@ export class TodoAppComponent implements OnInit {
   }
 
   removeTodo(todo) {
-    this.todoService.deleteTodoById(todo.id);
+    this.todoService
+      .deleteTodoById(todo.id)
+      .subscribe(
+        () => this.removeTodoById(todo.id),
+        error => this.errorMessage = <any>error
+      );
+  }
+
+  removeTodoById(id) {
+    this.todos = this.todos
+      .filter(todo => todo.id !== id);
   }
 
   getTodos() {

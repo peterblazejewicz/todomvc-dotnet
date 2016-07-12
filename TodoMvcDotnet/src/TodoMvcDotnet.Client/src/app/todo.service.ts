@@ -30,11 +30,15 @@ export class TodoService {
       .catch(this.handleError);
   }
 
-  // Simulate DELETE /todos/:id
-  deleteTodoById(id: number): TodoService {
-    this.todos = this.todos
-      .filter(todo => todo.id !== id);
-    return this;
+  // DELETE /todos/:id
+  deleteTodoById(id: number)  {
+    let options = new RequestOptions({
+      headers: this.headers
+    });
+    let url = `${this.ENDPOINT_URL}/${id}/`;
+    return this.http
+      .delete(url, options)
+      .catch(this.handleError);
   }
 
   // Simulate PUT /todos/:id
